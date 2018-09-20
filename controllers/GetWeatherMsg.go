@@ -19,10 +19,6 @@ func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("哈哈")
 }
 
-func main() {
-
-}
-
 type WeatherMsg struct {
 	StatusCode int      `json:"status_code"`
 	UpdateAt   string   `json:"update_at"`
