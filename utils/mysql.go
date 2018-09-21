@@ -17,3 +17,7 @@ func init() {
 	}
 	return
 }
+
+func QueryAll() {
+
+}
