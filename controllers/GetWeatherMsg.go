@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"html/template"
 	"net/http"
 )
 
@@ -19,6 +21,7 @@ func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	// fmt.Fprint(w, h)
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-cache")
+	// w.Header().Set("Set-Cookie", c1.String()) //等价于下面一行，多个cookie可以用Add()方法替换Set方法
 	http.SetCookie(w, &c1)
 	good := WeatherMsg{
 		StatusCode: 200,
@@ -29,11 +32,17 @@ func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	// output, _ := json.MarshalIndent(&good, "", "\t\t")
 	output, _ := json.Marshal(good)
 	w.Write(output)
-	// fmt.Println("哈哈")
+	fmt.Println(r.Cookie("cookieByGo"))
 }
 
 type WeatherMsg struct {
 	StatusCode int      `json:"status_code"`
 	UpdateAt   string   `json:"update_at"`
 	Data       []string `json:"data"`
+}
+
+func Process(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("template.html")
+	daysOfWeek := []string{"1", "2", "3", "4"}
+	t.Execute(w, daysOfWeek)
 }
