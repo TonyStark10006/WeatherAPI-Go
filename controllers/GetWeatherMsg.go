@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 )
 
@@ -39,10 +38,4 @@ type WeatherMsg struct {
 	StatusCode int      `json:"status_code"`
 	UpdateAt   string   `json:"update_at"`
 	Data       []string `json:"data"`
-}
-
-func Process(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("template.html")
-	daysOfWeek := []string{"1", "2", "3", "4"}
-	t.Execute(w, daysOfWeek)
 }

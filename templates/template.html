@@ -1,0 +1,30 @@
+{{ define "template" }}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试网页</title>
+</head>
+<body>
+    <ul>
+        {{ range $index, $value := . }}
+        <li>{{ $value }}</li>
+        <!-- template "template/content.html" -->
+        <!-- else -->
+        <!-- 当上一个li标签的点 . 的内容为nil的时候，else和end之间的内容将会显示 -->
+        <!-- <li>nothing to show</li>  -->
+        {{ end }}
+    </ul>
+    {{ template "content" }}
+    <!-- with "nima" -->
+    <!-- <p> . </p> -->
+    <!--  end  -->
+    <!--  .  -->
+        <!-- <h1 style="color:red;">Hello World!</h1> -->
+    <!-- end -->
+</body>
+</html>
+
+{{ end }}

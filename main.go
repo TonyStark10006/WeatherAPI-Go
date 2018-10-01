@@ -8,7 +8,7 @@ import (
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/getWeatherMsg", controllers.GetWeatherMsg)
-	mux.HandleFunc("/login/", controllers.Process)
+	mux.HandleFunc("/process", controllers.Process2)
 
 	server := &http.Server{
 		Addr:    "127.0.0.1:8080",
