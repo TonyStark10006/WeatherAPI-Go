@@ -1,7 +1,9 @@
-package main
+package controllers //main
 
 import (
 	"fmt"
+	"sync"
+	"time"
 )
 
 type Post struct {
@@ -32,6 +34,13 @@ func main() {
 		fmt.Println(post)
 	}
 
+	// 并发编程时如果要保证所有goroutine的任务都执行完毕再执行下一个任务的话可以用到sync包的wait group特性
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go printLetters2(&wg)
+	go printNumbers2(&wg)
+	wg.Wait()
+
 	// for _, post := range PostByAuthor["nima1"] {
 	// 	fmt.Println(post)
 	// }
@@ -42,4 +51,66 @@ func store(post Post) {
 	PostByID[post.ID] = &post
 	PostByAuthor[post.Author] = append(PostByAuthor[post.Author], &post)
 
+}
+
+func printNumbers() {
+	for i := 0; i <= 10; i++ {
+		// fmt.Printf("%d", i)
+	}
+}
+
+func printLetters() {
+	for i := 'A'; i < 'A'+10; i++ {
+		// fmt.Printf("%c", i)
+	}
+}
+
+func printNumbers1() {
+	for i := 0; i <= 10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		// fmt.Printf("%d", i)
+	}
+}
+
+func printLetters1() {
+	for i := 'A'; i < 'A'+10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		// fmt.Printf("%c", i)
+	}
+}
+
+func print1() {
+	printNumbers()
+	printLetters()
+}
+
+func goPrint1() {
+	go printNumbers()
+	go printLetters()
+}
+
+func print2() {
+	printNumbers1()
+	printLetters1()
+}
+
+func goPrint2() {
+	go printNumbers1()
+	go printLetters1()
+}
+
+func printNumbers2(wg *sync.WaitGroup) {
+	for i := 0; i <= 10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		fmt.Printf("%d", i)
+	}
+	wg.Done()
+}
+
+func printLetters2(wg *sync.WaitGroup) {
+	for i := 'A'; i < 'A'+10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		fmt.Printf("%c", i)
+	}
+	wg.Done()
 }
