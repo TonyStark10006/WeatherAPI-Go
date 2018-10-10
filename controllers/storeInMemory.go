@@ -35,11 +35,18 @@ func main() {
 	}
 
 	// 并发编程时如果要保证所有goroutine的任务都执行完毕再执行下一个任务的话可以用到sync包的wait group特性
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go printLetters2(&wg)
-	go printNumbers2(&wg)
-	wg.Wait()
+	// var wg sync.WaitGroup
+	// wg.Add(2)
+	// go printLetters2(&wg)
+	// go printNumbers2(&wg)
+	// wg.Wait()
+
+	// 或者使用通道特性，当通道没有数据可以接受时将会一直堵塞
+	chan1, chan2 := make(chan bool), make(chan bool)
+	go printNumbers3(chan1)
+	go printLetters3(chan2)
+	<-chan1 // 箭头左边没有接受者则为发送消息到通道
+	<-chan2
 
 	// for _, post := range PostByAuthor["nima1"] {
 	// 	fmt.Println(post)
@@ -113,4 +120,20 @@ func printLetters2(wg *sync.WaitGroup) {
 		fmt.Printf("%c", i)
 	}
 	wg.Done()
+}
+
+func printNumbers3(c chan bool) {
+	for i := 0; i <= 10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		fmt.Printf("%d", i)
+	}
+	c <- true
+}
+
+func printLetters3(c chan bool) {
+	for i := 'A'; i < 'A'+10; i++ {
+		time.Sleep(1 * time.Microsecond)
+		fmt.Printf("%c", i)
+	}
+	c <- true
 }
