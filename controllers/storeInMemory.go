@@ -45,8 +45,9 @@ func main() {
 	chan1, chan2 := make(chan bool), make(chan bool)
 	go printNumbers3(chan1)
 	go printLetters3(chan2)
-	<-chan1 // 箭头左边没有接受者则为发送消息到通道
-	<-chan2
+	nima1 := <-chan1 // 箭头左边没有接受者则为发送消息到通道
+	nima2 := <-chan2
+	fmt.Println("\n", nima1, nima2)
 
 	// for _, post := range PostByAuthor["nima1"] {
 	// 	fmt.Println(post)
@@ -124,7 +125,7 @@ func printLetters2(wg *sync.WaitGroup) {
 
 func printNumbers3(c chan bool) {
 	for i := 0; i <= 10; i++ {
-		time.Sleep(1 * time.Microsecond)
+		//time.Sleep(1 * time.Microsecond)
 		fmt.Printf("%d", i)
 	}
 	c <- true
@@ -132,7 +133,7 @@ func printNumbers3(c chan bool) {
 
 func printLetters3(c chan bool) {
 	for i := 'A'; i < 'A'+10; i++ {
-		time.Sleep(1 * time.Microsecond)
+		//time.Sleep(1 * time.Microsecond)
 		fmt.Printf("%c", i)
 	}
 	c <- true

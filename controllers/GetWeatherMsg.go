@@ -39,3 +39,11 @@ type WeatherMsg struct {
 	UpdateAt   string   `json:"update_at"`
 	Data       []string `json:"data"`
 }
+
+func getWeatherMsgByName(city string) (string, error) {
+	if city == "" {
+		return "输入城市为空", nil
+	}
+
+	return "找不到这个城市的天气信息啊", nil
+}
