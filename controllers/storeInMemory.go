@@ -2,8 +2,12 @@ package controllers //main
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"sync"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Post struct {
@@ -16,6 +20,12 @@ var PostByID map[int]*Post
 var PostByAuthor map[string][]*Post
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	key := os.Getenv("KEY")
+	println(key)
 	PostByID = make(map[int]*Post)
 	PostByAuthor = make(map[string][]*Post)
 

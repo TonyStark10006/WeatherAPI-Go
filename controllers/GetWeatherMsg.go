@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"weatherAPI/utils"
 )
 
 func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
+	val, _ := utils.GetAValue("good")
+	fmt.Println(val)
 	c1 := http.Cookie{
 		Name:     "cookieByGo",
 		Value:    "this is a cookie for broswer",
