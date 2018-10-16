@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"weatherAPI/utils"
+	_ "weatherAPI/utils/mysql"
+	redis "weatherAPI/utils/redis"
 )
 
 func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
-	val, _ := utils.GetAValue("good")
+	val, _ := redis.GetAValue("good")
 	fmt.Println(val)
+
+	// 重写cookie结构
 	c1 := http.Cookie{
 		Name:     "cookieByGo",
 		Value:    "this is a cookie for broswer",
