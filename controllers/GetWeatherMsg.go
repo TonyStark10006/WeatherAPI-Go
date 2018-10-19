@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	mysql "weatherAPI/utils/mysql"
+	mysql1 "weatherAPI/utils/mysql"
 	redis "weatherAPI/utils/redis"
 )
 
@@ -51,6 +51,8 @@ func getWeatherMsgByName(city string) (string, error) {
 	if city == "" {
 		return "输入城市为空", nil
 	}
+
+	DB := &mysql1.STATEMENT{}
 
 	return "找不到这个城市的天气信息啊", nil
 }

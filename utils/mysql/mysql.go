@@ -3,47 +3,49 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 )
 
 var DB *sql.DB
 
-func init() {
-	if DB == nil {
-		loadErr := godotenv.Load()
-		connection := os.Getenv("DB_CONNECTION")
-		host := os.Getenv("DB_HOST")
-		databaseName := os.Getenv("DB_DATABASE")
-		username := os.Getenv("DB_USERNAME")
-		pwd := os.Getenv("DB_PASSWORD")
-		port := os.Getenv("DB_PORT")
-		var err error
-		DB, err = sql.Open(connection,
-			username+":"+pwd+"@tcp("+string(host)+":"+string(port)+")/"+databaseName)
-		if err != nil {
-			fmt.Println(loadErr)
-			log.Fatal(err)
-		}
-	}
-}
+// func init() {
+// 	if DB == nil {
+// 		loadErr := godotenv.Load()
+// 		connection := os.Getenv("DB_CONNECTION")
+// 		host := os.Getenv("DB_HOST")
+// 		databaseName := os.Getenv("DB_DATABASE")
+// 		username := os.Getenv("DB_USERNAME")
+// 		pwd := os.Getenv("DB_PASSWORD")
+// 		port := os.Getenv("DB_PORT")
+// 		var err error
+// 		DB, err = sql.Open(connection,
+// 			username+":"+pwd+"@tcp("+string(host)+":"+string(port)+")/"+databaseName)
+// 		if err != nil {
+// 			fmt.Println(loadErr)
+// 			log.Fatal(err)
+// 		}
+// 	}
+// }
 
 type STATEMENT struct {
-	table        string
-	selectFields string
-	where        string
-	full         string
+	table         string
+	selectFields  string
+	where         string
+	full          string
+	update        string
+	insert        string
+	fullStatement string
 }
 
 func main() {
 	good := &STATEMENT{}
-	good.Select([]string{"id", "username"}).
+	// good.Select([]string{"id", "username"}).
+	good.Insert(map[string]string{"lihaile": "gaga", "hehe": "xixi"}).
 		Table("nima").
-		//Where(map[string]string{"wo": "detian"}).
-		First()
+		Where(map[string]string{"wo": "detian"})
+	good.gather()
+	fmt.Println(good.fullStatement)
 	// rows, err := DB.Query("select id, user_name, email from user")
 	// type POST struct {
 	// 	ID       int
@@ -87,22 +89,69 @@ func (s *STATEMENT) Where(where map[string]string) *STATEMENT { //where string
 
 // 返回from组合语句
 func (s *STATEMENT) Table(table string) *STATEMENT {
-	s.table = "FROM " + table + " "
+	s.table = table + " "
 	return s
 }
 
-// 返回所有结果
-func (s *STATEMENT) Get() {
+// 返回所有结果, sql.Rows指针
+func (s *STATEMENT) Get() *sql.Rows {
 	s.full = s.selectFields + s.table + s.where
 	fmt.Println(s.full)
+	rows, err := DB.Query(s.full)
+	if err != nil {
+		panic(err)
+	} else {
+		return rows
+	}
 }
 
 // 返回单行结果
-func (s *STATEMENT) First() {
+func (s *STATEMENT) First() *sql.Rows {
 	s.full = s.selectFields + s.table + s.where + "LIMIT 1"
 	fmt.Println(s.full)
+	rows, err := DB.Query(s.full)
+	if err != nil {
+		panic(err)
+	} else {
+		return rows
+	}
 }
 
+//
+func (s *STATEMENT) Update(set map[string]string) *STATEMENT {
+	for key, val := range set {
+		s.update = "`" + key + "` = \"" + val + "\", "
+	}
+	s.update = delSomeCharacters("SET "+s.update, 2) + " "
+	return s
+}
+
+func (s *STATEMENT) Insert(insert map[string]string) *STATEMENT {
+	var keys string
+	var vals string
+	for key, val := range insert {
+		keys = "`" + key + "`, "
+		vals = "\"" + val + "\", "
+	}
+	s.insert = "(" + delSomeCharacters(keys, 2) + ") VALUES (" + delSomeCharacters(vals, 2) + ") "
+	return s
+}
+
+func (s *STATEMENT) gather() {
+	if s.insert != "" {
+		s.fullStatement = "INSERT INTO " + s.table + s.insert
+	}
+
+	if s.selectFields != "" {
+		s.fullStatement = s.selectFields + "FROM " + s.table + s.where
+	}
+
+	if s.update != "" {
+		s.fullStatement = "UPDATE " + s.table + s.update + s.where
+	}
+}
+
+// 删除拼凑表达式的过程中多余的AND和等号之类的字符
 func delSomeCharacters(str string, num int) string {
 	if num >= 1 {
 		rs := []rune(str)
