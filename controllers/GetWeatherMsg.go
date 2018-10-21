@@ -10,7 +10,7 @@ import (
 
 func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	val, _ := redis.GetAValue("good")
-	mysql.Table().Get()
+	// mysql.Table().Get()
 	fmt.Println(val)
 
 	// 重写cookie结构
@@ -52,7 +52,13 @@ func getWeatherMsgByName(city string) (string, error) {
 		return "输入城市为空", nil
 	}
 
-	DB := &mysql1.STATEMENT{}
+	good := &mysql1.STATEMENT{}
+	// good.Select([]string{"id", "username"}).
+	good.Insert(map[string]string{"lihaile": "gaga", "hehe": "xixi"}).
+		Table("nima").
+		Where(map[string]string{"wo": "detian"}).
+		Get()
+	fmt.Println(good.FullStatement)
 
 	return "找不到这个城市的天气信息啊", nil
 }
