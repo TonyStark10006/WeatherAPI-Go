@@ -3,3 +3,5 @@
 vendor/
 go.sum
 .env
+utils/mysql/.env
+.vscode/

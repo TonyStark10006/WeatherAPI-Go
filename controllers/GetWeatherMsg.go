@@ -58,7 +58,7 @@ func getWeatherMsgByName(city string) (string, error) {
 		Table("nima").
 		Where(map[string]string{"wo": "detian"}).
 		Get()
-	fmt.Println(good.FullStatement)
+	//fmt.Println(good.FullStatement)
 
 	return "找不到这个城市的天气信息啊", nil
 }
