@@ -62,3 +62,35 @@ func getWeatherMsgByName(city string) (string, error) {
 
 	return "找不到这个城市的天气信息啊", nil
 }
+
+// func main() {
+// 	good := &STATEMENT{}
+// good.Select([]string{"id", "username"}).
+// good.Insert(map[string]string{"lihaile": "gaga", "hehe": "xixi"}).
+// 	Table("nima").
+// 	Where(map[string]string{"wo": "detian"}).
+// 	Get()
+//good.gather()
+//fmt.Println(good.fullStatement)
+// rows, err := DB.Query("select id, user_name, email from user")
+// type POST struct {
+// 	ID       int
+// 	username string
+// 	email    string
+// }
+// post := POST{}
+// var posts []POST
+// // var post map[string]string
+// for rows.Next() {
+// 	err = rows.Scan(&post.ID, &post.username, &post.email)
+// 	posts = append(posts, post)
+// }
+// fmt.Println(posts)
+// for key, value := range posts {
+// 	fmt.Println(string(key) + ":" + value.email + "\n")
+// }
+// if err != nil {
+// 	fmt.Println(err)
+// }
+// rows.Close()
+// }
