@@ -1,4 +1,4 @@
-package mysql1
+package mysql
 
 import (
 	"database/sql"
@@ -26,8 +26,8 @@ func init() {
 			username+":"+pwd+"@tcp("+string(host)+":"+string(port)+")/"+databaseName)
 		if err != nil {
 			fmt.Println(loadErr)
-			log.Fatal(err)
 			defer DB.Close()
+			log.Fatal(err)
 		}
 	}
 }

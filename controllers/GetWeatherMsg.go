@@ -3,22 +3,43 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"regexp"
+	"strconv"
 	mysql1 "weatherAPI/utils/mysql"
-	redis "weatherAPI/utils/redis"
+	"weatherAPI/utils/redis"
+
+	// redis "weatherAPI/utils/redis"
 )
 
 func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
-	val, _ := redis.GetAValue("good")
+	// 判断中文
+	if m, _ := regexp.MatchString("^\\p{Han}+$", r.FormValue("email")); !m {
+		// 判断数字
+		getInt, err := strconv.Atoi(r.FormValue("email"))
+		if err != nil{
+			//数字转化出错了，那么可能就不是数字
+			log.Panicln("这也不是数字", getInt)
+		}
+
+
+	} else {
+		fmt.Println("这是中文")
+	}
+	return
+
+	// val, _ := redis.GetAValue("good")
 	// mysql.Table().Get()
-	fmt.Println(val)
+	// fmt.Println(val)
 
 	// 重写cookie结构
-	c1 := http.Cookie{
-		Name:     "cookieByGo",
-		Value:    "this is a cookie for broswer",
-		HttpOnly: true,
-	}
+	// c1 := http.Cookie{
+	// 	Name:     "cookieByGo",
+	// 	Value:    "this is a cookie for broswer",
+	// 	HttpOnly: true,
+	// }
 	// r.ParseForm() //解析表单数据
 	// r.Form["city"] // 返回切片
 	// city := r.FormValue("city")
@@ -28,7 +49,7 @@ func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-cache")
 	// w.Header().Set("Set-Cookie", c1.String()) //等价于下面一行，多个cookie可以用Add()方法替换Set方法
-	http.SetCookie(w, &c1)
+	// http.SetCookie(w, &c1)
 	good := WeatherMsg{
 		StatusCode: 200,
 		UpdateAt:   "2018/06/19",
@@ -38,7 +59,7 @@ func GetWeatherMsg(w http.ResponseWriter, r *http.Request) {
 	// output, _ := json.MarshalIndent(&good, "", "\t\t")
 	output, _ := json.Marshal(good)
 	w.Write(output)
-	fmt.Println(r.Cookie("cookieByGo"))
+	// ßfmt.Println(r.Cookie("cookieByGo"))
 }
 
 type WeatherMsg struct {
@@ -48,10 +69,6 @@ type WeatherMsg struct {
 }
 
 func getWeatherMsgByName(city string) (string, error) {
-	if city == "" {
-		return "输入城市为空", nil
-	}
-
 	good := &mysql1.STATEMENT{}
 	// good.Select([]string{"id", "username"}).
 	good.Insert(map[string]string{"lihaile": "gaga", "hehe": "xixi"}).
@@ -63,34 +80,15 @@ func getWeatherMsgByName(city string) (string, error) {
 	return "找不到这个城市的天气信息啊", nil
 }
 
-// func main() {
-// 	good := &STATEMENT{}
-// good.Select([]string{"id", "username"}).
-// good.Insert(map[string]string{"lihaile": "gaga", "hehe": "xixi"}).
-// 	Table("nima").
-// 	Where(map[string]string{"wo": "detian"}).
-// 	Get()
-//good.gather()
-//fmt.Println(good.fullStatement)
-// rows, err := DB.Query("select id, user_name, email from user")
-// type POST struct {
-// 	ID       int
-// 	username string
-// 	email    string
-// }
-// post := POST{}
-// var posts []POST
-// // var post map[string]string
-// for rows.Next() {
-// 	err = rows.Scan(&post.ID, &post.username, &post.email)
-// 	posts = append(posts, post)
-// }
-// fmt.Println(posts)
-// for key, value := range posts {
-// 	fmt.Println(string(key) + ":" + value.email + "\n")
-// }
-// if err != nil {
-// 	fmt.Println(err)
-// }
-// rows.Close()
-// }
+func getWeatherMsgByInt(num rune) {
+	if val, err := redis.GetAValue(string(num)); err != nil {
+		fmt.Println(val)
+	} else {
+		response, _ := http.Get("http://127.0.0.1/api/getWeatherMsg?city=" + string(num))
+		defer response.Body.Close()
+		fmt.Println(response)
+		body, _ := ioutil.ReadAll(response.Body)
+		fmt.Println(string(body))
+	}
+}
+

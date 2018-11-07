@@ -1,4 +1,4 @@
-package mysql1
+package mysql
 
 import (
 	"fmt"
